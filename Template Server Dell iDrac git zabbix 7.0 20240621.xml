@@ -1,0 +1,1745 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>7.0</version>
+    <template_groups>
+        <template_group>
+            <uuid>e960332b3f6c46a1956486d4f3f99fce</uuid>
+            <name>Templates/Server hardware</name>
+        </template_group>
+    </template_groups>
+    <templates>
+        <template>
+            <uuid>5d1e1d8de4c145ccaa69e9b85d9a3415</uuid>
+            <template>Template Server Dell iDrac git</template>
+            <name>Template Server Dell iDrac git</name>
+            <description>## Overview
+这是[https://share.zabbix.com/network\_devices/cat-dell-sonicwall/dell-idrac](network_devices/cat-dell-sonicwall/dell-idrac)的中文化版本，同时进行了修正以支持zabbix3.0，感谢原作者
+###2024.5.22
+调整了生产年月日并禁用，需要时可打开；增加了网卡MAC信息；增加了PCIE项目默认禁用因为并不能显示SLOT插卡信息；修改了电源不分序号问题；增加了CPU型号核数信息；修改了SN快速服务代码等名称增加资产号；关闭了电压默认监控；增加了UPTIME和 icmp ping。更新了idrac信息的OID从老库2变成新库5，13代以前的机型可能会不匹配。修改了网卡状态触发器错误，禁用硬盘和内存SN</description>
+            <groups>
+                <group>
+                    <name>Templates/Server hardware</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>532c68d429544acb9247623a82b31059</uuid>
+                    <name>资产号</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.1.3.4.0</snmp_oid>
+                    <key>assettag</key>
+                    <delay>24h</delay>
+                    <history>90d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>ASSET_TAG</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>4c895bbc110b45ecb29a915fa8875ad1</uuid>
+                    <name>BIOS 更新日期</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.4.300.50.1.7.1.1</snmp_oid>
+                    <key>BiosDate</key>
+                    <delay>86400</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>a5408f374a874ee79b15495884b7f043</uuid>
+                    <name>BIOS 版本</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.4.300.50.1.8.1.1</snmp_oid>
+                    <key>BiosVersion</key>
+                    <delay>86400</delay>
+                    <history>90d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>71490ed9a58647978a6838d381afae9c</uuid>
+                    <name>CMOS 电池状态</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.4.600.50.1.5.1.1</snmp_oid>
+                    <key>CMOSBatteryStatus</key>
+                    <delay>60</delay>
+                    <history>90d</history>
+                    <valuemap>
+                        <name>Dell Open Manage System Status</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>3082ef50832047c7a270fb8f9b7917a2</uuid>
+                            <expression>last(/Template Server Dell iDrac git/CMOSBatteryStatus)&lt;&gt;3</expression>
+                            <name>Server {HOST.NAME} Problem with CMOS Battery</name>
+                            <status>DISABLED</status>
+                            <priority>WARNING</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>c8103e8d0aaa414d8dd1cd699cdd2362</uuid>
+                            <expression>last(/Template Server Dell iDrac git/CMOSBatteryStatus)&lt;&gt;3</expression>
+                            <name>物理机 {HOST.NAME} CMOS 电池异常</name>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>ac92808a96c044ce938ed5bbbd392356</uuid>
+                    <name>系统状态</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.2.1.0</snmp_oid>
+                    <key>GlobalSystemStatus</key>
+                    <delay>60</delay>
+                    <history>7d</history>
+                    <valuemap>
+                        <name>Dell Open Manage System Status</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>b84e54e791344f8bbd4ec593bd55317a</uuid>
+                            <expression>nodata(/Template Server Dell iDrac git/GlobalSystemStatus,300s)</expression>
+                            <name>Server {HOST.NAME} No iDrac data for &gt; 5 minutes</name>
+                            <status>DISABLED</status>
+                            <priority>WARNING</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>d6d885b276d24e1cb80fa0d9143264f8</uuid>
+                            <expression>last(/Template Server Dell iDrac git/GlobalSystemStatus)&gt;4</expression>
+                            <name>Server {HOST.NAME} Overall System Status Error</name>
+                            <status>DISABLED</status>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>67322831f2e54005868eabcb23b1b292</uuid>
+                            <expression>nodata(/Template Server Dell iDrac git/GlobalSystemStatus,300s)</expression>
+                            <name>物理机 {HOST.NAME} iDrac 5分钟无数据</name>
+                            <priority>WARNING</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>70a33a6138a246d983ef600807304435</uuid>
+                            <expression>last(/Template Server Dell iDrac git/GlobalSystemStatus)&gt;4</expression>
+                            <name>物理机 {HOST.NAME} 发生严重错误</name>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>d8bab1662a2745f09c29e2a147d34546</uuid>
+                    <name>Dell iDRAC: ICMP ping</name>
+                    <type>SIMPLE</type>
+                    <key>icmpping</key>
+                    <history>7d</history>
+                    <valuemap>
+                        <name>Service state</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Status</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>b2ae16b32d5046b5bdcf8e379f6742d6</uuid>
+                            <expression>max(/Template Server Dell iDrac git/icmpping,#3)=0</expression>
+                            <name>Dell iDRAC: Unavailable by ICMP ping</name>
+                            <priority>HIGH</priority>
+                            <description>Last three attempts returned timeout.  Please check device connectivity.</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>466f8b8ccb274ad194aaab225c02af15</uuid>
+                    <name>iDRAC 访问地址</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.1.1.6.0</snmp_oid>
+                    <key>idrac_acessurl</key>
+                    <delay>86400</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>URL_A</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>ebc4dc316acf4733b62575cae221a862</uuid>
+                    <name>服务编号SN</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.2.1.1.11.0</snmp_oid>
+                    <key>idrac_assettag</key>
+                    <delay>86400</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>TAG</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>4d1e75f353634f7e89591073f4b5e3ae</uuid>
+                    <name>快速服务代码</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.1.3.3.0</snmp_oid>
+                    <key>idrac_esc</key>
+                    <delay>86400</delay>
+                    <history>90d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>c98fca7c95534494b831d709a000fa3f</uuid>
+                    <name>iDRAC 固件版本</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.1.1.5.0</snmp_oid>
+                    <key>idrac_firmwareversion</key>
+                    <delay>86400</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>72d5d463be074a9090a2da6c85cecc96</uuid>
+                    <name>型号</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.1.3.12.0</snmp_oid>
+                    <key>idrac_SystemModel</key>
+                    <delay>86400</delay>
+                    <history>90d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>MODEL</inventory_link>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>24cfbe6d9b17498e93465a1e24867efd</uuid>
+                    <name>iDRAC 版本</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.1.1.2.0</snmp_oid>
+                    <key>idrac_version</key>
+                    <delay>86400</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>af091fede5a843a4a8419b1354e8a650</uuid>
+                    <name>电源无功功率</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.4.600.60.1.15.1.1</snmp_oid>
+                    <key>PowerUsageMinIdle</key>
+                    <delay>120</delay>
+                    <history>90d</history>
+                    <units>W</units>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Power</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>fe4ff07a5a744621a84958daf0914d32</uuid>
+                    <name>电源传感器状态</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.4.600.60.1.5.1.1</snmp_oid>
+                    <key>PowerUsageSensorStatus</key>
+                    <delay>120</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Dell Open Manage System Status</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Power</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>db224a671c5f410190923d445351561e</uuid>
+                    <name>RAID 控制器固件版本</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.1.1.8.1</snmp_oid>
+                    <key>RAIDControllerFirmware</key>
+                    <delay>86400</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Disks / Storage</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>820542fefcc14c959e537a8b5ad8eb35</uuid>
+                    <name>RAID 控制器名称</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.1.1.2.1</snmp_oid>
+                    <key>RAIDControllerName</key>
+                    <delay>86400</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Disks / Storage</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>65e96e7496dd4621ae91f58e0f4be7dd</uuid>
+                    <name>RAID 控制器状态</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.1.1.37.1</snmp_oid>
+                    <key>RAIDControllerStatus</key>
+                    <delay>300</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Dell Open Manage System Status</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Disks / Storage</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>96b2bf2e4af347a68bfab71521042a54</uuid>
+                            <expression>last(/Template Server Dell iDrac git/RAIDControllerStatus)&lt;&gt;3</expression>
+                            <name>Server {HOST.NAME} RAID Controller Error</name>
+                            <status>DISABLED</status>
+                            <priority>HIGH</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>f781a5fde2fa4cc4aab4d6368b245804</uuid>
+                            <expression>last(/Template Server Dell iDrac git/RAIDControllerStatus)&lt;&gt;3</expression>
+                            <name>物理机 {HOST.NAME} RAID控制器错误</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>32b6e54cf0b1430b8469b38dbfe577ab</uuid>
+                    <name>Dell iDRAC: Uptime (network)</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.2.1.1.3.0</snmp_oid>
+                    <key>system.net.uptime[sysUpTime.0]</key>
+                    <delay>30s</delay>
+                    <history>7d</history>
+                    <units>uptime</units>
+                    <preprocessing>
+                        <step>
+                            <type>MULTIPLIER</type>
+                            <parameters>
+                                <parameter>0.01</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Status</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>0a566f000b144a72a58fd6e9234a99bb</uuid>
+                            <expression>last(/Template Server Dell iDrac git/system.net.uptime[sysUpTime.0])&lt;10m</expression>
+                            <name>Dell iDRAC: {HOST.NAME} has been restarted (uptime &lt; 10m)</name>
+                            <priority>WARNING</priority>
+                            <description>Uptime is less than 10 minutes</description>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <uuid>40626591184c4286a504499dbdc99a78</uuid>
+                    <name>BIOS 状态</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.4.300.50.1.5.1.1</snmp_oid>
+                    <key>SystemBiosStatus</key>
+                    <delay>60</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Dell Open Manage System Status</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>System Info</value>
+                        </tag>
+                    </tags>
+                </item>
+                <item>
+                    <uuid>3daa8d7a3e0348d28a3743df67032442</uuid>
+                    <name>电压状态</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.674.10892.5.4.200.10.1.12.1</snmp_oid>
+                    <key>VoltageStatusCombined</key>
+                    <delay>120</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <valuemap>
+                        <name>Dell Open Manage System Status</name>
+                    </valuemap>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Voltages</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>94da43f34b74451fbe9e2db694fc8556</uuid>
+                            <expression>last(/Template Server Dell iDrac git/VoltageStatusCombined)&lt;&gt;3</expression>
+                            <name>Server {HOST.NAME} Voltage Status Error</name>
+                            <status>DISABLED</status>
+                            <priority>HIGH</priority>
+                        </trigger>
+                        <trigger>
+                            <uuid>d3de961dc35b4860aee1be6c9b269e2d</uuid>
+                            <expression>last(/Template Server Dell iDrac git/VoltageStatusCombined)&lt;&gt;3</expression>
+                            <name>物理机 {HOST.NAME} 电压异常</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <uuid>8bc229ff6ab546d4b42af7e6bbe65960</uuid>
+                    <name>Disk Enumeration</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#DISKNAME}, 1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.2]</snmp_oid>
+                    <key>DiskEnumeration</key>
+                    <delay>7200</delay>
+                    <lifetime>30d</lifetime>
+                    <enabled_lifetime_type>DISABLE_NEVER</enabled_lifetime_type>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>54163f78dbae4e83beb4b597e128d557</uuid>
+                            <name>磁盘 {#DISKNAME} : 生产日</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.32.{#SNMPINDEX}</snmp_oid>
+                            <key>DiskManufactureDay.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>c8408ddd395d431b9839bf9f722a0372</uuid>
+                            <name>磁盘 {#DISKNAME} : 制造商</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.3.{#SNMPINDEX}</snmp_oid>
+                            <key>DiskManufacturer.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>ab6dbdf9733f44549eff88380b171a41</uuid>
+                            <name>磁盘 {#DISKNAME} : 生产周</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.33.{#SNMPINDEX}</snmp_oid>
+                            <key>DiskManufactureWeek.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>d02caf67d4814132bb894e8efe8465ab</uuid>
+                            <name>磁盘 {#DISKNAME} : 生产年份</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.34.{#SNMPINDEX}</snmp_oid>
+                            <key>DiskManufactureYear.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>2a55e318528e4c059c6db281f5724ac4</uuid>
+                            <name>磁盘 {#DISKNAME} : 型号</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>DiskModel.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>f5355b5083d549efb4c63108d2f1b9fa</uuid>
+                            <name>磁盘 {#DISKNAME} : 名称</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.55.{#SNMPINDEX}</snmp_oid>
+                            <key>DiskName.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>9a18581680f947639225abae99d09000</uuid>
+                            <name>磁盘 {#DISKNAME} : 序列号</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.7.{#SNMPINDEX}</snmp_oid>
+                            <key>DiskSerialNo.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>97f0ac9d0e8d42aeb2b2483a87502cb5</uuid>
+                            <name>磁盘 {#DISKNAME} : 磁盘大小</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.11.{#SNMPINDEX}</snmp_oid>
+                            <key>DiskSize.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <units>B</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>1048576</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>815b955b01414581be2f4ad77bac8358</uuid>
+                            <name>磁盘 {#DISKNAME} : 状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.4.{#SNMPINDEX}</snmp_oid>
+                            <key>DiskState.[{#SNMPINDEX}]</key>
+                            <delay>300</delay>
+                            <history>7d</history>
+                            <valuemap>
+                                <name>DellDracDiskState</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>bd0505613c504364a3e89edef45a03e7</uuid>
+                            <name>磁盘 {#DISKNAME} : 类型</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.35.{#SNMPINDEX}</snmp_oid>
+                            <key>DiskType.[{#SNMPINDEX}]</key>
+                            <delay>24h</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>IDRAC-MIB-SMIv2::physicalDiskMediaType</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>7ff7e0f881d341aa95abd001890612a6</uuid>
+                    <name>Fan Enumeration</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#FAN}, 1.3.6.1.4.1.674.10892.5.4.700.12.1.8.1]</snmp_oid>
+                    <key>FanEnumeration</key>
+                    <delay>7200</delay>
+                    <lifetime>30d</lifetime>
+                    <enabled_lifetime_type>DISABLE_NEVER</enabled_lifetime_type>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>e5c3ae7a686a4fbb947683ed003e9d59</uuid>
+                            <name>风扇 {#FAN} 转速</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.700.12.1.6.1.{#SNMPINDEX}</snmp_oid>
+                            <key>FanSpeed.[{#SNMPINDEX}]</key>
+                            <delay>120</delay>
+                            <history>7d</history>
+                            <trends>180d</trends>
+                            <units>rpm</units>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Fans</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>ea9db252af8445769404fa4b937022d7</uuid>
+                            <name>风扇 {#FAN} 状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.700.12.1.5.1.{#SNMPINDEX}</snmp_oid>
+                            <key>FanStatus.[{#SNMPINDEX}]</key>
+                            <delay>120</delay>
+                            <history>7d</history>
+                            <trends>180d</trends>
+                            <valuemap>
+                                <name>Dell Open Manage System Status</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Fans</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>b33521d9f7c84e19addbe695593ce09c</uuid>
+                                    <expression>last(/Template Server Dell iDrac git/FanStatus.[{#SNMPINDEX}])&lt;&gt;3</expression>
+                                    <name>物理机 {HOSTNAME} 风扇 {#FAN} 异常</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>a6c5d18a14b94551885033838efa069d</uuid>
+                            <name>FAN {#FAN}</name>
+                            <graph_items>
+                                <graph_item>
+                                    <color>C80000</color>
+                                    <item>
+                                        <host>Template Server Dell iDrac git</host>
+                                        <key>FanSpeed.[{#SNMPINDEX}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>7f1e79f3ecbf41fa83f9e24ae43b3ccf</uuid>
+                    <name>Memory Enumeration</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#MEM},1.3.6.1.4.1.674.10892.5.4.1100.50.1.8.1]</snmp_oid>
+                    <key>MemoryEnum</key>
+                    <delay>43200;50/1-7,00:00-24:00</delay>
+                    <lifetime>30d</lifetime>
+                    <enabled_lifetime_type>DISABLE_NEVER</enabled_lifetime_type>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>d9f9545406cd4d12afb4dc268151d5c3</uuid>
+                            <name>内存 {#MEM} 制造商</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.50.1.21.1.{#SNMPINDEX}</snmp_oid>
+                            <key>MemManufacturer[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Memory</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>f928f1c3192748e89b2787f5b30a12bb</uuid>
+                            <name>内存 {#MEM} 序列号</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.50.1.23.1.{#SNMPINDEX}</snmp_oid>
+                            <key>MemSerialNo.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <status>DISABLED</status>
+                            <discover>NO_DISCOVER</discover>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Memory</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>0ec9fd49e25e44f8b5aa20b59afbe16a</uuid>
+                            <name>内存 {#MEM} 大小</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.50.1.14.1.{#SNMPINDEX}</snmp_oid>
+                            <key>MemSize.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <units>B</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>1024</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Memory</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>eb488845357d4746a2e41c08c76279fb</uuid>
+                            <name>内存 {#MEM} 速度</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.50.1.15.1.{#SNMPINDEX}</snmp_oid>
+                            <key>MemSpeed.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <units>MHz</units>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Memory</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>f82be9e68e2648d19d9936d004885228</uuid>
+                            <name>内存 {#MEM} 状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.50.1.5.1.{#SNMPINDEX}</snmp_oid>
+                            <key>MemStatus.[{#SNMPINDEX}]</key>
+                            <delay>300</delay>
+                            <history>7d</history>
+                            <trends>180d</trends>
+                            <valuemap>
+                                <name>Dell Open Manage System Status</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Memory</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>3aacdce5afa148fbabb14ff48dc1af6b</uuid>
+                                    <expression>last(/Template Server Dell iDrac git/MemStatus.[{#SNMPINDEX}])&lt;&gt;3</expression>
+                                    <name>物理机{HOST.NAME} 内存 {#MEM} 错误</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>c16ba004dbe1496cb71aca66fe0e7a7b</uuid>
+                    <name>Network Enumeration</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#NETIF},1.3.6.1.4.1.674.10892.5.4.1100.90.1.2.1]</snmp_oid>
+                    <key>NetworkEnum</key>
+                    <delay>7200</delay>
+                    <lifetime>30d</lifetime>
+                    <enabled_lifetime_type>DISABLE_NEVER</enabled_lifetime_type>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>a31042f420dc4ec2a9ce0d1720e0ccdd</uuid>
+                            <name>网卡 {#NETIF} : 连接状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.90.1.4.1.{#SNMPINDEX}</snmp_oid>
+                            <key>NetConnStatus.[{#SNMPINDEX}]</key>
+                            <delay>120</delay>
+                            <history>7d</history>
+                            <trends>180d</trends>
+                            <valuemap>
+                                <name>Dell iDRAC Network Device Connection Status</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Network Cards</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>4dc725f878b2419cb8898d4568a82262</uuid>
+                                    <expression>(last(/Template Server Dell iDrac git/NetConnStatus.[{#SNMPINDEX}],#1)&lt;&gt;last(/Template Server Dell iDrac git/NetConnStatus.[{#SNMPINDEX}],#2))=1</expression>
+                                    <name>物理机{HOST.NAME} 网卡 {#NETIF} 状态变化</name>
+                                    <priority>WARNING</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>5c1e6fd049c24327991c02eac2f21527</uuid>
+                            <name>网卡 {#NETIF} : MAC地址</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.90.1.15.1.{#SNMPINDEX}</snmp_oid>
+                            <key>NetMac.[{#SNMPINDEX}]</key>
+                            <delay>24h</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Network Cards</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>ae5e7f8363f54c1b82ea0d9ecdfa95f1</uuid>
+                            <name>网卡 {#NETIF} : 名称</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.90.1.6.1.{#SNMPINDEX}</snmp_oid>
+                            <key>NetName.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Network Cards</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>91b0d078326a49c5a197643ecb46c569</uuid>
+                            <name>网卡 {#NETIF} : 槽位</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.90.1.30.1.{#SNMPINDEX}</snmp_oid>
+                            <key>NetSlot.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Network Cards</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>b384ca55fe4f431bab193c0a09776096</uuid>
+                            <name>网卡 {#NETIF} : 状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.90.1.3.1.{#SNMPINDEX}</snmp_oid>
+                            <key>NetStatus.[{#SNMPINDEX}]</key>
+                            <delay>300</delay>
+                            <history>7d</history>
+                            <trends>180d</trends>
+                            <valuemap>
+                                <name>Dell Open Manage System Status</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Network Cards</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>4b1c4aac075e4e938840f002d0308a54</uuid>
+                                    <expression>last(/Template Server Dell iDrac git/NetStatus.[{#SNMPINDEX}])&lt;&gt;3</expression>
+                                    <name>物理机{HOST.NAME}  网卡 {#NETIF} 状态异常</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>7a3b9f7521f94a60a170b46c521d1be5</uuid>
+                    <name>PCI-E Enumeration</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#PCIENAME}, 1.3.6.1.4.1.674.10892.5.4.1100.80.1.2.1]</snmp_oid>
+                    <key>PCI-eEnumeration</key>
+                    <delay>12h</delay>
+                    <status>DISABLED</status>
+                    <lifetime>30d</lifetime>
+                    <enabled_lifetime_type>DISABLE_NEVER</enabled_lifetime_type>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>a575139da00d4c5ba00cf04734c6c8d4</uuid>
+                            <name>PCIE{#PCIENAME}控制器</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.80.1.9.1.{#SNMPINDEX}</snmp_oid>
+                            <key>PCIEDescription.[{#SNMPINDEX}]</key>
+                            <delay>12h</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PCI Enumeration</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>2196d47a626b41028500c9bd513a82e6</uuid>
+                            <name>PCIE{#PCIENAME}位置</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.80.1.12.1.{#SNMPINDEX}</snmp_oid>
+                            <key>PCIEFQDD.[{#SNMPINDEX}]</key>
+                            <delay>12h</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PCI Enumeration</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>f69e8758c0964fe286f28e952af24205</uuid>
+                            <name>PCIE{#PCIENAME}厂商</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.80.1.8.1.{#SNMPINDEX}</snmp_oid>
+                            <key>PCIEManufacturer.[{#SNMPINDEX}]</key>
+                            <delay>12h</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PCI Enumeration</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>11e929ae0bcb45d4a32950b4d5397754</uuid>
+                            <name>PCIE{#PCIENAME}状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.80.1.5.1.{#SNMPINDEX}</snmp_oid>
+                            <key>PCIEStatus.[{#SNMPINDEX}]</key>
+                            <delay>12h</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PCI Enumeration</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>6dc60c9e77a04a1c8e41fdb505ec4a45</uuid>
+                    <name>Power Supply Enumeration</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#POWER},1.3.6.1.4.1.674.10892.5.4.600.12.1.2.1]</snmp_oid>
+                    <key>PowerSupplies</key>
+                    <delay>7200</delay>
+                    <lifetime>30d</lifetime>
+                    <enabled_lifetime_type>DISABLE_NEVER</enabled_lifetime_type>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>84fc2624b34c42a6aec262601afc00ad</uuid>
+                            <name>电源 {#POWER} 输入电压</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.600.12.1.9.1.{#SNMPINDEX}</snmp_oid>
+                            <key>PowerSupplyInputVoltage.[{#SNMPINDEX}]</key>
+                            <delay>300</delay>
+                            <history>7d</history>
+                            <trends>180d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>V</units>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Power</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>c09281dddb204373807e9f153ec9d83d</uuid>
+                            <name>电源 {#POWER} 最大功率</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.600.12.1.6.1.{#SNMPINDEX}</snmp_oid>
+                            <key>PowerSupplyMaxPower.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>W</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>0.1</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Power</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>70a79c7bfabe4552b681e043d0d58800</uuid>
+                            <name>电源 {#POWER} 传感器状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.600.12.1.11.1.{#SNMPINDEX}</snmp_oid>
+                            <key>PowerSupplySensorState.[{#SNMPINDEX}]</key>
+                            <delay>300</delay>
+                            <history>7d</history>
+                            <trends>90d</trends>
+                            <valuemap>
+                                <name>Dell PSU State Settings</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Power</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>20b257cac54046bd9253938bd0345005</uuid>
+                                    <expression>last(/Template Server Dell iDrac git/PowerSupplySensorState.[{#SNMPINDEX}])&lt;&gt;1</expression>
+                                    <name>物理机 {HOST.NAME} 电源 {#POWER} 状态异常</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>4ba147768ce444c393251642fa614dbc</uuid>
+                            <name>电源 {#POWER} 状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.600.12.1.4.1.{#SNMPINDEX}</snmp_oid>
+                            <key>PowerSupplyStateSettings.[{#SNMPINDEX}]</key>
+                            <delay>120</delay>
+                            <history>7d</history>
+                            <trends>180d</trends>
+                            <valuemap>
+                                <name>Dell PSU State Settings</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Power</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>b5e36f0e5f874644b3b66f4bf6b69548</uuid>
+                    <name>Processor Enumeration</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#CPU},1.3.6.1.4.1.674.10892.5.4.1100.32.1.7.1]</snmp_oid>
+                    <key>ProcEnum</key>
+                    <delay>43200</delay>
+                    <lifetime>30d</lifetime>
+                    <enabled_lifetime_type>DISABLE_NEVER</enabled_lifetime_type>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>253801ad1ce843edad8984b25951d769</uuid>
+                            <name>处理器 {#SNMPINDEX} 核数</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.30.1.19.1.{#SNMPINDEX}</snmp_oid>
+                            <key>ProcCore.[{#SNMPINDEX}]</key>
+                            <delay>12h</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <units>核</units>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Processor</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>55b4dc8e07494d06a6bb7b2ae6e39106</uuid>
+                            <name>处理器 {#SNMPINDEX} 型号</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.30.1.23.1.{#SNMPINDEX}</snmp_oid>
+                            <key>ProcName.[{#SNMPINDEX}]</key>
+                            <delay>12h</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Processor</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>17623311e258415c9bb619e84873e64a</uuid>
+                            <name>处理器 {#SNMPINDEX} 状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.1100.32.1.5.1.{#SNMPINDEX}</snmp_oid>
+                            <key>ProcStatus.[{#SNMPINDEX}]</key>
+                            <delay>300</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>Dell Open Manage System Status</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Processor</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>c7633b54210e4c888257f84fcb8dddea</uuid>
+                                    <expression>(last(/Template Server Dell iDrac git/ProcStatus.[{#SNMPINDEX}])&lt;&gt;3 and last(/Template Server Dell iDrac git/ProcStatus.[{#SNMPINDEX}])&lt;&gt;2) or (last(/Template Server Dell iDrac git/ProcStatus.[{#SNMPINDEX}])&lt;&gt;2 and last(/Template Server Dell iDrac git/ProcStatus.[{#SNMPINDEX}])=2)</expression>
+                                    <name>物理机 {HOST.NAME} 处理器 {#SNMPINDEX} 状态异常</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>6437ac5822d44f07947c32022a96c553</uuid>
+                    <name>Temperature Enumeration</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#TEMP},1.3.6.1.4.1.674.10892.5.4.700.20.1.8.1]</snmp_oid>
+                    <key>TempEnum</key>
+                    <delay>7200</delay>
+                    <lifetime>30d</lifetime>
+                    <enabled_lifetime_type>DISABLE_NEVER</enabled_lifetime_type>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>98d86e2dc59047aa884cdc7ec13fff75</uuid>
+                            <name>温度传感器 {#TEMP} 状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.700.20.1.5.1.{#SNMPINDEX}</snmp_oid>
+                            <key>TempStatus.[{#SNMPINDEX}]</key>
+                            <delay>300</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>Dell Open Manage System Status</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Temperatures</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>b22e56eed3dc422186d569e76da3f19d</uuid>
+                                    <expression>last(/Template Server Dell iDrac git/TempStatus.[{#SNMPINDEX}])&lt;&gt;3</expression>
+                                    <name>物理机 {HOST.NAME} 温度传感器 {#TEMP} 状态异常</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>910ccdf8450440d98c2d5dbad18e74d9</uuid>
+                            <name>温度传感器 {#TEMP} 温度值</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.700.20.1.6.1.{#SNMPINDEX}</snmp_oid>
+                            <key>TempValue.[{#SNMPINDEX}]</key>
+                            <delay>60</delay>
+                            <history>7d</history>
+                            <trends>180d</trends>
+                            <value_type>FLOAT</value_type>
+                            <units>°C</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>0.1</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Temperatures</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <uuid>8531789aa35d48c0b2c8c0307e3e7196</uuid>
+                            <name>Temperature on sensor {#TEMP}</name>
+                            <graph_items>
+                                <graph_item>
+                                    <color>C80000</color>
+                                    <calc_fnc>ALL</calc_fnc>
+                                    <item>
+                                        <host>Template Server Dell iDrac git</host>
+                                        <key>TempValue.[{#SNMPINDEX}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>70029b3566ff44d0bfc47bf4c620d9cb</uuid>
+                    <name>Voltage Table Enumeration</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#VOLTAGE}, 1.3.6.1.4.1.674.10892.5.4.600.20.1.8.1]</snmp_oid>
+                    <key>VoltageTable</key>
+                    <delay>7200</delay>
+                    <status>DISABLED</status>
+                    <lifetime>30d</lifetime>
+                    <enabled_lifetime_type>DISABLE_NEVER</enabled_lifetime_type>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>21676a54ddf842e3bc575a16c3fc2d2e</uuid>
+                            <name>组件 {#VOLTAGE} : 电压状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.4.600.20.1.5.1.{#SNMPINDEX}</snmp_oid>
+                            <key>VoltageStatus.[{#SNMPINDEX}]</key>
+                            <delay>120</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>Dell Open Manage System Status</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Voltages</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>f2d62aeb401e4c1486db39c41f482893</uuid>
+                                    <expression>last(/Template Server Dell iDrac git/VoltageStatus.[{#SNMPINDEX}])&lt;&gt;3</expression>
+                                    <name>物理机 {HOST.NAME} 电压组件 {#VOLTAGE} 异常</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>d9861ae78ee440bba6b179ddd0afbf85</uuid>
+                    <name>Disk Volume Enumeration</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#VOLNAME},1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.1]</snmp_oid>
+                    <key>VolumeEnum</key>
+                    <delay>7200</delay>
+                    <lifetime>30d</lifetime>
+                    <enabled_lifetime_type>DISABLE_NEVER</enabled_lifetime_type>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>bdfd5494e83844fbb4ce632dcbdb047a</uuid>
+                            <name>磁盘卷 {#VOLNAME} : 状态</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.4.{#SNMPINDEX}</snmp_oid>
+                            <key>VolumeDiskState.[{#SNMPINDEX}]</key>
+                            <delay>300</delay>
+                            <history>7d</history>
+                            <valuemap>
+                                <name>DellRaidVolumeState</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>15fb124a54cf418da2955241c0e98099</uuid>
+                                    <expression>last(/Template Server Dell iDrac git/VolumeDiskState.[{#SNMPINDEX}])&lt;&gt;2</expression>
+                                    <name>物理机{HOST.NAME} 磁盘卷 {#VOLNAME} 错误</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>cce6b90472474b359a4b8270f256fef8</uuid>
+                            <name>磁盘卷 {#SNMPINDEX} : 名称</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.36.{#SNMPINDEX}</snmp_oid>
+                            <key>VolumeName.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>2ad8037a0a764270a8accafb879a1a94</uuid>
+                            <name>磁盘卷 {#SNMPINDEX} : 大小</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>VolumeSize.[{#SNMPINDEX}]</key>
+                            <delay>86400</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <units>B</units>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <parameters>
+                                        <parameter>1048576</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>9af078995fc741839c15b3ebb2301f72</uuid>
+                            <name>磁盘卷 {#SNMPINDEX} : RAID级别</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.674.10892.5.5.1.20.140.1.1.13.{#SNMPINDEX}</snmp_oid>
+                            <key>VolumeState.[{#SNMPINDEX}]</key>
+                            <delay>3600</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <valuemap>
+                                <name>DellRaidLevel</name>
+                            </valuemap>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Disks / Storage</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$SNMP_COMMUNITY}</macro>
+                    <value>public</value>
+                </macro>
+            </macros>
+            <valuemaps>
+                <valuemap>
+                    <uuid>9d6abe077dda489bac818fe30995044f</uuid>
+                    <name>DellDracDiskState</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Ready</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Online</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Foreign</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Offline</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>Blocked</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>Failed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>Non-RAID</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>Removed</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>c567f1f41aa141e0b250dd98ddca8681</uuid>
+                    <name>Dell iDRAC Network Device Connection Status</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Up</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Down</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>driverBad</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>driverDisabled</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>hardwareInitalizing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>11</value>
+                            <newvalue>hardwareResetting</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>12</value>
+                            <newvalue>hardwareClosing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>13</value>
+                            <newvalue>hardwareNotReady</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>a596deaaf56940cda5e52ef08f0365c3</uuid>
+                    <name>Dell Open Manage System Status</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>OK</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>NonCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>Critical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>NonRecoverable</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>ae0d4d5b999245f3903f6a2b80f448bf</uuid>
+                    <name>Dell PSU State Settings</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Online (state disabled)</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>not Ready</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>Fan Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>Online and Fan Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>16</value>
+                            <newvalue>on</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>242</value>
+                            <newvalue>Online and OK</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>84eaa59689274b9e9f2a47753122137d</uuid>
+                    <name>DellRaidLevel</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>RAID-0</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>RAID-1</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>RAID-5</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>RAID-6</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>RAID-10</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>RAID-50</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>RAID-60</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>Concatenated RAID 1</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>Concatenated RAID 5</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>4e02b9b4620f42f0843e2147d3ebab8d</uuid>
+                    <name>DellRaidVolumeState</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Online</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Failed</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Degraded</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>4ef643b4ddbb4c45bf9c207a9656f22f</uuid>
+                    <name>Dell_PSU_SensorState</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Presence Detected</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>PS Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Predictuve Failure</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>PS AC lost</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>16</value>
+                            <newvalue>AC lost or out of range</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32</value>
+                            <newvalue>AC out of range but still present</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>64</value>
+                            <newvalue>Configuration Error</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>2582110710074bb1a06b52b31e2c8b20</uuid>
+                    <name>IDRAC-MIB-SMIv2::physicalDiskMediaType</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>HDD</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>SSD</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>97a3afa9a03a4c3498fbcceb7d79d1a8</uuid>
+                    <name>Service state</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>Down</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Up</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+            </valuemaps>
+        </template>
+    </templates>
+</zabbix_export>
